@@ -4,7 +4,7 @@ if(!defined('APPLICATION')) die();
 $PluginInfo['ForceRole'] = array(
 	'Name' => 'Force Role',
 	'Description' => 'Force logged user to select a role from a roles list (taken from the RegistrationRole plugin).',
-	'Version' => '0.1.1',
+	'Version' => '0.1.2',
 	'RequiredApplications' => array('Vanilla' => '2.0.18'),
 	'RequiredTheme' => FALSE,
 	'RequiredPlugins' => array('RegistrationRole' => '>=0.1'),
@@ -17,9 +17,7 @@ $PluginInfo['ForceRole'] = array(
 );
 
 class ForceRolePlugin extends Gdn_Plugin{
-public function Base_Render_Before($Sender) {
-    $Sender->SetData('TotalThreads', 12345);
-}
+
   public function Base_AfterAnalyzeRequest_Handler($Sender){
     if(!($Sender->EventArguments['Controller'] instanceof EntryController)){
       if(Gdn::Session()->IsValid() 
