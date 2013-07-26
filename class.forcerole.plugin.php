@@ -4,10 +4,10 @@ if(!defined('APPLICATION')) die();
 $PluginInfo['ForceRole'] = array(
 	'Name' => 'Force Role',
 	'Description' => 'Force logged user to select a role from a roles list (taken from the RegistrationRole plugin).',
-	'Version' => '0.1.2',
+	'Version' => '0.2',
 	'RequiredApplications' => array('Vanilla' => '2.0.18'),
 	'RequiredTheme' => FALSE,
-	'RequiredPlugins' => array('RegistrationRole' => '>=0.1'),
+	'RequiredPlugins' => array('RegistrationRole' => '>=0.2'),
 	'SettingsUrl' => FALSE,
 	'SettingsPermission' => 'Garden.Settings.Manage',
 	'Author' => "Alessandro Miliucci",
@@ -39,18 +39,25 @@ class ForceRolePlugin extends Gdn_Plugin{
     $UserRoles = Gdn::UserModel()->GetRoles(intval($UserID))->Result();
     $Roles = self::availableRoles()->Result();
     $NeedRole = true;
-    foreach ($UserRoles as $Role) {
-      if($Role['Name'] == 'Moderator'){
-        $NeedRole = false;
-        break;
-      }elseif($Role['Name'] == 'Administrator'){
-        $NeedRole = false;
-        break;
-      }elseif (in_array($Role, $Roles)) {
-        $NeedRole = false;
-        break;
-      }
-    }
+    if(sizeof($UserRoles) == 1 
+    	&& $UserRoles[0]['RoleID'] == C('Garden.Registration.ConfirmEmailRole')
+    	) {
+    	//if is waiting confirmation don't needs a role
+    	$NeedRole = false;
+	} else {
+	    foreach ($UserRoles as $Role) {
+	      if($Role['Name'] == 'Moderator'){
+	        $NeedRole = false;
+	        break;
+	      }elseif($Role['Name'] == 'Administrator'){
+	        $NeedRole = false;
+	        break;
+	      }elseif (in_array($Role, $Roles)) {
+	        $NeedRole = false;
+	        break;
+	      }
+	    }
+	}
     return $NeedRole;
   }
 
